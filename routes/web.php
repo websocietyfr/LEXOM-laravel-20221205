@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,3 +40,4 @@ Route::prefix('payment')->group(function() {
     Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('payment.destroy');
 });
 
+Route::resource('annonce', AnnonceController::class);
