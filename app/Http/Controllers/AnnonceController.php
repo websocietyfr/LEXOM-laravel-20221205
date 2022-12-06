@@ -61,7 +61,8 @@ class AnnonceController extends Controller
                 return view('annonces.show', [ 'annonce' => $annonce ]);
             }
         }
-        return view('404');
+        // return view('404');
+        return response()->view('404', [], 404);
     }
 
     /**
