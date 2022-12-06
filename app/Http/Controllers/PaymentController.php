@@ -13,7 +13,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        return 'index payment';
     }
 
     /**
@@ -23,7 +23,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        //
+        return 'create payment form';
     }
 
     /**
@@ -34,7 +34,7 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return 'traiter le formulaire de création';
     }
 
     /**
@@ -45,7 +45,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        //
+        return 'Payement à partir de son ID';
     }
 
     /**
@@ -56,7 +56,7 @@ class PaymentController extends Controller
      */
     public function edit($id)
     {
-        //
+        return 'payment update form';
     }
 
     /**
@@ -68,7 +68,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return 'Enregistrement des modifications du paiement';
     }
 
     /**
@@ -79,6 +79,6 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return 'suppression de paiement à partir de l\'Id';
     }
 }
