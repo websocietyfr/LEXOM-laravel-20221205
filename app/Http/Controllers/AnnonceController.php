@@ -12,8 +12,9 @@ class AnnonceController extends Controller
     public function __construct()
     {
         $this->annonces = [
-            [ 'id' => 1, 'name' => 'Ma première Annonce', 'description' => 'Lorem Ipsum' ],
-            [ 'id' => 2, 'name' => 'Ma deuxième Annonce', 'description' => 'Lorem Ipsum 2' ],
+            [ 'id' => 1, 'name' => 'Ma première Annonce', 'description' => 'Lorem Ipsum', 'status' => true ],
+            [ 'id' => 2, 'name' => 'Ma deuxième Annonce', 'description' => 'Lorem Ipsum 2', 'status' => false ],
+            [ 'id' => 3, 'name' => 'Ma troisième Annonce', 'description' => 'Lorem Ipsum 3', 'status' => true ],
         ];
     }
     /**
