@@ -40,4 +40,5 @@ Route::prefix('payment')->group(function() {
     Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('payment.destroy');
 });
 
-Route::resource('annonce', AnnonceController::class);
+// Route::resource('annonce', AnnonceController::class);
+Route::resource('annonce', AnnonceController::class)->middleware('postman');
