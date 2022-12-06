@@ -6,7 +6,9 @@
     <h1>{{ $title }}</h1>
     <ul>
         @foreach ($annonces as $annonce)
-            <li>{{ $annonce['name'] }}</li>
+            @if($annonce['status'])
+                <li>{{ $annonce['name'] }}</li>
+            @endif
         @endforeach
     </ul>
 @endsection
