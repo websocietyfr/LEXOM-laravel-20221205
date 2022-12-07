@@ -34,9 +34,13 @@ class AnnonceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('annonces.create');
+        return view('annonces.create', [
+            'name' => $request->old('name'),
+            'description' => $request->old('description'),
+            'price' => $request->old('price')
+        ]);
     }
 
     /**
@@ -47,7 +51,26 @@ class AnnonceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validation des données de formulaire
+        $request->validate([
+            'name' => 'required|max:255',
+            'description' => [ 'required' ],
+            'price' => [ 'required', 'numeric' ]
+        ]);
+
+        // enregistrement des données de formulaire
+        $isStored = DB::insert(
+            "INSERT INTO annonces (name,description,price,created_at,updated_at) VALUES (:name,:description,:price,NOW(),NOW())", [
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price')
+        ]);
+
+        // rediriger l'utilisateur vers une interface lui notifiant la création des données.
+        if($isStored) {
+            return response()->redirectToRoute('annonce.index');
+        }
+        return response()->redirectToRoute('annonce.create')->withErrors('Erreur lors de l\'enregistrement de votre annonce', 'annonce')->withInput();
     }
 
     /**
@@ -58,10 +81,12 @@ class AnnonceController extends Controller
      */
     public function show($id)
     {
-        foreach ($this->annonces as $annonce) {
-            if(array_key_exists('id',$annonce) && $annonce['id'] === (int)$id) {
-                return view('annonces.show', [ 'annonce' => $annonce ]);
-            }
+        // on récupère depuis la base de données les données en fonction de la requête Select fournie
+        // on vérifie à la fin avec la syntax '??' si la valeur [0] dans le résultat de la requête nous retourne bien une valeur
+        // Auquel cas, on assigne 'null' à la variable $annonce.
+        $annonce = DB::select('select * from annonces where id = :id', [ 'id' => $id ])[0] ?? null;
+        if($annonce) {
+            return view('annonces.show', [ 'annonce' => $annonce ]);
         }
         // return view('404');
         return response()->view('404', [], 404);
@@ -75,11 +100,11 @@ class AnnonceController extends Controller
      */
     public function edit($id)
     {
-        foreach ($this->annonces as $annonce) {
-            if(array_key_exists('id',$annonce) && $annonce['id'] === (int)$id) {
-                return view('annonces.edit', [ 'annonce' => $annonce ]);
-            }
+        $annonce = DB::select('select * from annonces where id = :id', [ 'id' => $id ])[0] ?? null;
+        if($annonce) {
+            return view('annonces.edit', [ 'annonce' => $annonce ]);
         }
+        return response()->view('404', [], 404);
     }
 
     /**
@@ -91,7 +116,29 @@ class AnnonceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // vérification des données du formulaire
+        $request->validate([
+            'name' => 'required|max:255',
+            'description' => [ 'required' ],
+            'price' => [ 'required', 'numeric' ]
+        ]);
+
+        // Mise à jour des données en BDD
+        $isUpdated = DB::update('
+            UPDATE annonces SET name = :name, description = :description, price = :price WHERE id = :id
+        ', [
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'id' => $id
+        ]);
+
+        // redirection de l'utilisateur vers la route show
+        if($isUpdated) {
+            return response()->redirectToRoute('annonce.show', [ 'annonce' => $id ]);
+        }
+        return redirect()->back()->withErrors('Erreur lors de la modificaiton de votre annonce', 'annonce')->withInput();
+
     }
 
     /**
@@ -102,6 +149,13 @@ class AnnonceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $isDeleted = DB::delete('DELETE FROM annonces WHERE id = :id', [
+            'id' => $id
+        ]);
+
+        if($isDeleted) {
+            return response()->redirectToRoute('annonce.index');
+        }
+        return redirect()->back()->withErrors('Erreur lors de la suppression de votre annonce', 'annonce');
     }
 }
