@@ -10,4 +10,8 @@
             <li><a href="{{ route('annonce.show', [ 'annonce' => $annonce->id ]) }}">{{ $annonce->name }}</a></li>
         @endforeach
     </ul>
+    <form>
+        <input type="text" name="search" value="{{ request()->query('search') }}" />
+        <input type="submit" value="Lancer la recherche" />
+    </form>
 @endsection

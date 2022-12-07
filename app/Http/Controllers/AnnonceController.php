@@ -2,30 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AnnonceController extends Controller
 {
-    protected $annonces;
-
-    public function __construct()
-    {
-        $this->annonces = [
-            [ 'id' => 1, 'name' => 'Ma première Annonce', 'description' => 'Lorem Ipsum', 'status' => true ],
-            [ 'id' => 2, 'name' => 'Ma deuxième Annonce', 'description' => 'Lorem Ipsum 2', 'status' => false ],
-            [ 'id' => 3, 'name' => 'Ma troisième Annonce', 'description' => 'Lorem Ipsum 3', 'status' => true ],
-        ];
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $annonces = DB::select('select * from annonces');
+        // $annonces = Annonce::all();
+        $annonces = Annonce::where('name', 'like', '%'.$request->query('search').'%')->get();
         return view('annonces.index', [ 'annonces' => $annonces, 'title' => 'Liste des annonces' ]);
     }
 
