@@ -24,7 +24,8 @@ class AnnonceController extends Controller
      */
     public function index()
     {
-        return view('annonces.index', [ 'annonces' => $this->annonces, 'title' => 'Liste des annonces' ]);
+        $annonces = DB::select('select * from annonces');
+        return view('annonces.index', [ 'annonces' => $annonces, 'title' => 'Liste des annonces' ]);
     }
 
     /**
