@@ -51,18 +51,29 @@ class AnnonceController extends Controller
         ]);
 
         // enregistrement des données de formulaire
-        $isStored = DB::insert(
-            "INSERT INTO annonces (name,description,price,created_at,updated_at) VALUES (:name,:description,:price,NOW(),NOW())", [
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price')
-        ]);
+        // $isStored = DB::insert(
+        //     "INSERT INTO annonces (name,description,price,created_at,updated_at) VALUES (:name,:description,:price,NOW(),NOW())", [
+        //     'name' => $request->input('name'),
+        //     'description' => $request->input('description'),
+        //     'price' => $request->input('price')
+        // ]);
+        try {
+            $annonce = new Annonce();
+            $annonce->name = $request->input('name');
+            $annonce->description = $request->input('description');
+            $annonce->price = $request->input('price');
+            $isStored = $annonce->save();
 
-        // rediriger l'utilisateur vers une interface lui notifiant la création des données.
-        if($isStored) {
-            return response()->redirectToRoute('annonce.index');
+            // rediriger l'utilisateur vers une interface lui notifiant la création des données.
+            if($isStored) {
+                return response()->redirectToRoute('annonce.index');
+            }
+            return response()->redirectToRoute('annonce.create')->withErrors(['annonce' => 'Erreur lors de l\'enregistrement de votre annonce'])->withInput();
+        } catch(\Illuminate\Database\QueryException $e) {
+            return response()->redirectToRoute('annonce.create')->withErrors(['annonce' => 'Erreur d\'insertion, vérifiez le format des données envoyés'])->withInput();
+        } catch(\Exception $e) {
+            return response()->redirectToRoute('annonce.create')->withErrors(['annonce' => $e->getMessage()])->withInput();
         }
-        return response()->redirectToRoute('annonce.create')->withErrors('Erreur lors de l\'enregistrement de votre annonce', 'annonce')->withInput();
     }
 
     /**
@@ -116,20 +127,36 @@ class AnnonceController extends Controller
         ]);
 
         // Mise à jour des données en BDD
-        $isUpdated = DB::update('
-            UPDATE annonces SET name = :name, description = :description, price = :price WHERE id = :id
-        ', [
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'id' => $id
-        ]);
+        // $isUpdated = DB::update('
+        //     UPDATE annonces SET name = :name, description = :description, price = :price WHERE id = :id
+        // ', [
+        //     'name' => $request->input('name'),
+        //     'description' => $request->input('description'),
+        //     'price' => $request->input('price'),
+        //     'id' => $id
+        // ]);
 
-        // redirection de l'utilisateur vers la route show
-        if($isUpdated) {
-            return response()->redirectToRoute('annonce.show', [ 'annonce' => $id ]);
+        try {
+            // $annonce = Annonce::find($id);
+            // if(!$annonce) {
+            //     return response('<h1>Introuvable !</h1>', 404)->header('Content-type', 'text/html');
+            // }
+            $annonce = Annonce::findOrFail($id);
+            $annonce->name = $request->input('name');
+            $annonce->description = $request->input('description');
+            $annonce->price = $request->input('price');
+            $isUpdated = $annonce->save();
+
+            // redirection de l'utilisateur vers la route show
+            if($isUpdated) {
+                return response()->redirectToRoute('annonce.show', [ 'annonce' => $id ]);
+            }
+            return redirect()->back()->withErrors(['annonce' => 'Erreur lors de la modificaiton de votre annonce'])->withInput();
+        } catch(\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->withErrors(['annonce' => 'Erreur dans le formattage des données, vérifiez les valeurs des champs envoyés'])->withInput();
+        } catch(\Exception $e) {
+            return redirect()->back()->withErrors(['annonce' => $e->getMessage()])->withInput();
         }
-        return redirect()->back()->withErrors('Erreur lors de la modificaiton de votre annonce', 'annonce')->withInput();
 
     }
 
@@ -141,9 +168,17 @@ class AnnonceController extends Controller
      */
     public function destroy($id)
     {
-        $isDeleted = DB::delete('DELETE FROM annonces WHERE id = :id', [
-            'id' => $id
-        ]);
+        // $isDeleted = DB::delete('DELETE FROM annonces WHERE id = :id', [
+        //     'id' => $id
+        // ]);
+
+        // $isDeleted = Annonce::destroy($id);
+        // $annonce = Annonce::find($id);
+        // if(!$annonce) {
+        //     return response('<h1>Introuvable !</h1>', 404)->header('Content-type', 'text/html');
+        // }
+        $annonce = Annonce::findOrFail($id);
+        $isDeleted = $annonce->delete();
 
         if($isDeleted) {
             return response()->redirectToRoute('annonce.index');

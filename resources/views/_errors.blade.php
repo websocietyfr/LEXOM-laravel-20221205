@@ -34,6 +34,6 @@
     <p @class([
         'alert-danger'
     ])>
-        L'erreur de l'annonce
+        {{ $errors->first('annonce') }}
     </p>
 @enderror
