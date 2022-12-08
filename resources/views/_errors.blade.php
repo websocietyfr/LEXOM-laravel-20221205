@@ -43,3 +43,16 @@
         <p class="alert alert-danger">{{ $error }}</p>
     @endforeach
 @endif
+
+@if(session('success'))
+    <p class="alert alert-success">{{ session('success') }}</p>
+@endif
+@if(session('infos'))
+    <p class="alert alert-infos">{{ session('infos') }}</p>
+@endif
+@if(session('default'))
+    <p class="alert alert-default">{{ session('default') }}</p>
+@endif
+@if(session('warning'))
+    <p class="alert alert-warning">{{ session('warning') }}</p>
+@endif

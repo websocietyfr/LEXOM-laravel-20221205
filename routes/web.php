@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,3 +49,5 @@ Route::resource('annonce', AnnonceController::class)->middleware('postman');
 Route::get('/connexion', [AuthController::class, 'login'])->name('login');
 Route::post('/connexion', [AuthController::class, 'authenticate'])->name('authentication');
 Route::get('/deconnexion', [AuthController::class, 'logout'])->name('logout');
+Route::get('/registration', [AuthController::class, 'registration'])->name('registration');
+Route::post('/register', [AuthController::class, 'register'])->name('register');

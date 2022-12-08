@@ -57,6 +57,12 @@ class Handler extends ExceptionHandler
             // ma propre exception
             throw new \App\Exceptions\ModelNotFoundHandler;
         }
+        if($e instanceof \Illuminate\Database\QueryException) {
+            // ma propre exception
+            return back()->withErrors([
+                'sqlError' => 'Une erreur est sûrvenue dans l\'insertion en base de données : '. $e->getMessage()
+            ])->withInput();
+        }
 
         return parent::render($request, $e);
     }

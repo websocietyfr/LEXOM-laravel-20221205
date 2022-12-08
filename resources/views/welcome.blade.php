@@ -25,6 +25,8 @@
             @if (Route::has('login'))
                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
                     @auth
+                        {{-- être vigileant dans l'utilisation de la façade Auth:: dans les templates, s'assurer avant qu'on as bien vérifier avec @auth que l'utilisateur est connecté, sinon Auth::user renverra 'null' --}}
+                        <span>Bienvenue {{ Auth::user()->firstname ?? 'John' }} {{ Auth::user()->lastname ?? 'Doe' }} !</span>
                         <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
                         <a href="{{ route('logout') }}" class="btn btn-danger">Déconnexion</a>
                     @else
