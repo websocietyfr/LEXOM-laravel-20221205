@@ -53,6 +53,10 @@ class Handler extends ExceptionHandler
         if($e instanceof \Illuminate\Session\TokenMismatchException) {
             throw new \App\Exceptions\CsrfHandler;
         }
+        if($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            // ma propre exception
+            throw new \App\Exceptions\ModelNotFoundHandler;
+        }
 
         return parent::render($request, $e);
     }
