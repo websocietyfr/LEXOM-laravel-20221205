@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnonceController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/accueil', [IndexController::class, 'index']);
 Route::get('/contact', [IndexController::class, 'contact']);
@@ -42,3 +43,8 @@ Route::prefix('payment')->group(function() {
 
 // Route::resource('annonce', AnnonceController::class);
 Route::resource('annonce', AnnonceController::class)->middleware('postman');
+
+// authentication routes
+Route::get('/connexion', [AuthController::class, 'login'])->name('login');
+Route::post('/connexion', [AuthController::class, 'authenticate'])->name('authentication');
+Route::get('/deconnexion', [AuthController::class, 'logout'])->name('logout');
